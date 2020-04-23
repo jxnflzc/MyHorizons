@@ -1,6 +1,10 @@
-﻿namespace MyHorizons.Data.TownData.Offsets
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace MyHorizons.Data.TownData.Offsets
 {
-    public sealed class MainOffsetsV1 : MainOffsets
+    public sealed class MainOffsetsV2 : MainOffsets
     {
         public override int Offset_Vilagers => 0x120;
         public override int Offset_TownId => 0x1D72F0;

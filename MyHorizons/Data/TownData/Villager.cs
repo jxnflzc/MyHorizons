@@ -15,6 +15,8 @@ namespace MyHorizons.Data.TownData
         public byte Personality;
         public string Catchphrase;
         public ItemCollection Furniture;
+        public ItemCollection Wallpaper;
+        public ItemCollection Flooring;
 
         private ISaveFile SaveFile { get; }
 
@@ -35,6 +37,27 @@ namespace MyHorizons.Data.TownData
             for (var i = 0; i < ftr.Length; i++)
                 ftr[i] = new Item(SaveFile, Offset + offsets.Villager_Furniture + i * 0x2C);
             Furniture = new ItemCollection(ftr);
+
+            Wallpaper = new ItemCollection(new Item[1] { new Item(SaveFile, Offset + offsets.Villager_Wallpaper) });
+            Flooring = new ItemCollection(new Item[1] { new Item(SaveFile, Offset + offsets.Villager_Flooring) });
+        }
+
+        public bool IsMovingOut()
+        {
+            var offsets = MainOffsets.GetOffsets(SaveFile.GetRevision());
+            return (SaveFile.ReadU8(Offset + offsets.Villager_StateFlags) & offsets.Villager_StateFlagMovingOut) != 0;
+        }
+
+        public void SetIsMovingOut(bool movingOut)
+        {
+            var offsets = MainOffsets.GetOffsets(SaveFile.GetRevision());
+            var flags = SaveFile.ReadU8(Offset + offsets.Villager_StateFlags);
+            if (movingOut)
+                flags |= (byte)offsets.Villager_StateFlagMovingOut;
+            else
+                flags &= (byte)~offsets.Villager_StateFlagMovingOut;
+            SaveFile.WriteU8(Offset + offsets.Villager_StateFlags, flags);
+            // TODO: StateFlags + 0x10 always? changes from 0x0A => 0x00 when moving out. Not sure if that's needed.
         }
 
         public void Save()
@@ -48,6 +71,8 @@ namespace MyHorizons.Data.TownData
 
             for (var i = 0; i < Furniture.Count; i++)
                 Furniture[i].Save(SaveFile, Offset + offsets.Villager_Furniture + i * 0x2C);
+            Wallpaper[0].Save(SaveFile, Offset + offsets.Villager_Wallpaper);
+            Flooring[0].Save(SaveFile, Offset + offsets.Villager_Flooring);
         }
     }
 }

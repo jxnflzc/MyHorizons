@@ -20,11 +20,17 @@ namespace MyHorizons.Data.TownData.Offsets
         public abstract int Villager_Personality { get; }
         public abstract int Villager_Catchphrase { get; }
         public abstract int Villager_Furniture { get; }
+        public abstract int Villager_StateFlags { get; }
+        public abstract int Villager_Wallpaper { get; }
+        public abstract int Villager_Flooring { get; }
 
         // Sizes
         public virtual int Villager_CatchphraseLength { get; } = 12;
         public virtual int Villager_FurnitureCount { get; } = 16;
         public virtual int Villager_SpeciesMax { get; } = 0x23;
+
+        // Flags
+        public virtual int Villager_StateFlagMovingOut { get; } = 0b00000010;
         #endregion
 
         #region PATTERNS
@@ -40,6 +46,7 @@ namespace MyHorizons.Data.TownData.Offsets
             {
                 0 => new MainOffsetsV0(),
                 1 => new MainOffsetsV1(),
+                2 => new MainOffsetsV2(),
                 _ => throw new IndexOutOfRangeException("Unknown Save Revision!")
             };
     }
